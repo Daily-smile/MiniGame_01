@@ -5,7 +5,7 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
-    [Header("Audio Clips")]
+    [Header("音频剪辑")]
     public AudioClip perfectFitSound;
     public AudioClip goodFitSound;
     public AudioClip failSound;
@@ -46,7 +46,8 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Playing sound: " + type + " (Placeholder)");
+            // 如果剪辑为空，输出占位日志（受 GameLogger 全局开关控制）
+            GameLogger.Log("正在播放音效: " + type + " (占位符)", "AUDIO");
         }
     }
 }

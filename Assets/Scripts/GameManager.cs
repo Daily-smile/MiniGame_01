@@ -13,16 +13,16 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    [Header("References")]
+    [Header("引用")]
     public RingController ring;
     public PatchController patch;
 
-    [Header("Game Settings")]
-    public float perfectFitThreshold = 2f; // degrees
-    public float goodFitThreshold = 10f;    // degrees
-    public float failFitThreshold = 20f;   // degrees
+    [Header("游戏设置")]
+    public float perfectFitThreshold = 2f; // 度数
+    public float goodFitThreshold = 10f;    // 度数
+    public float failFitThreshold = 20f;   // 度数
 
-    [Header("Stats")]
+    [Header("统计数据")]
     public int score = 0;
     public int combo = 0;
     public int currentLevel = 1;
@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    [Header("Level Configuration")]
+    [Header("关卡配置")]
     public List<LevelData> levelDataList;
     public LevelData endlessLevelBase;
 
@@ -76,9 +76,9 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            // Use base for endless or just generate procedurally
+            // 对于无尽模式使用基础配置或程序化生成
             data = endlessLevelBase;
-            // Procedural increase for endless?
+            // 无尽模式的程序化增长？
         }
 
         if (data != null)
@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            // Default logic if no data exists
+            // 如果没有数据，使用默认逻辑
             targetFits = 5 + (level - 1) * 2;
             ring.SetRotationSpeed(100f + level * 5f);
         }
@@ -103,7 +103,7 @@ public class GameManager : MonoBehaviour
     {
         if (currentState != GameState.Playing) return;
 
-        // Buff: Perfect Lock
+        // Buff: 完美锁定
         if (BuffManager.Instance.perfectLockRemaining > 0)
         {
             BuffManager.Instance.perfectLockRemaining--;
@@ -111,7 +111,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // The patch is fired from the bottom (angle 270 degrees)
+        // 贴片从底部发射（角度为 270 度）
         float targetWorldAngle = 270f;
         
         bool matchedAnyGap = false;
@@ -154,7 +154,7 @@ public class GameManager : MonoBehaviour
 
     private void HandleFit(int points, bool isPerfect)
     {
-        // Buff: Double Score
+        // Buff: 分数翻倍
         if (BuffManager.Instance.doubleScoreRemaining > 0)
         {
             BuffManager.Instance.doubleScoreRemaining--;
@@ -166,13 +166,13 @@ public class GameManager : MonoBehaviour
         {
             combo++;
             successfulFits++;
-            Debug.Log("Perfect Fit! Combo: " + combo);
+            GameLogger.LogSuccess("完美贴合！连击: " + combo, "GAMEPLAY");
 
-            // Update Task
+            // 更新任务进度
             RetentionManager.Instance.UpdateTaskProgress("Perfect Fit", 1);
             RetentionManager.Instance.UpdateTaskProgress("Combo", combo);
 
-            // Trigger buffs based on combo
+            // 根据连击触发 Buff
             if (combo == 5)
             {
                 BuffManager.Instance.ActivateBuff(BuffType.PerfectLock);
@@ -182,16 +182,16 @@ public class GameManager : MonoBehaviour
                 BuffManager.Instance.ActivateBuff(BuffType.DoubleScore);
             }
             
-            // Play Sound
+            // 播放音效
             AudioManager.Instance.PlaySound("Perfect");
         }
         else
         {
             combo = 0;
             successfulFits++;
-            Debug.Log("Good Fit!");
+            GameLogger.Log("良好贴合！", "GAMEPLAY");
             
-            // Play Sound
+            // 播放音效
             AudioManager.Instance.PlaySound("Good");
         }
 
@@ -211,16 +211,16 @@ public class GameManager : MonoBehaviour
     {
         combo = 0;
         currentState = GameState.GameOver;
-        Debug.Log("Game Over!");
+        GameLogger.LogWarning("游戏结束！", "GAME_OVER");
         UIManager.Instance.ShowResultPanel(false, score);
     }
 
     private void WinLevel()
     {
         currentState = GameState.LevelComplete;
-        Debug.Log("Level Complete!");
+        GameLogger.LogSuccess("关卡完成！", "LEVEL_WIN");
 
-        // Update Task
+        // 更新任务进度
         RetentionManager.Instance.UpdateTaskProgress("Complete", 1);
 
         UIManager.Instance.ShowResultPanel(true, score);

@@ -5,24 +5,24 @@ using System;
 [Serializable]
 public class DailyTask
 {
-    public string description;
-    public int targetValue;
-    public int currentValue;
-    public int rewardGold;
-    public bool isCompleted;
-    public bool isClaimed;
+    public string description; // 任务描述
+    public int targetValue;    // 目标值
+    public int currentValue;   // 当前进度值
+    public int rewardGold;     // 奖励金币
+    public bool isCompleted;   // 是否完成
+    public bool isClaimed;     // 是否已领取奖励
 }
 
 public class RetentionManager : MonoBehaviour
 {
     public static RetentionManager Instance { get; private set; }
 
-    [Header("Sign-in")]
-    public int consecutiveDays = 0;
-    public DateTime lastSignInDate;
-    public bool hasSignedToday = false;
+    [Header("签到")]
+    public int consecutiveDays = 0;    // 连续签到天数
+    public DateTime lastSignInDate;    // 上次签到日期
+    public bool hasSignedToday = false; // 今日是否已签到
 
-    [Header("Daily Tasks")]
+    [Header("每日任务")]
     public List<DailyTask> dailyTasks = new List<DailyTask>();
 
     private void Awake()
@@ -36,7 +36,7 @@ public class RetentionManager : MonoBehaviour
 
     private void LoadRetentionData()
     {
-        // Simple PlayerPrefs for demo
+        // 演示用的简单 PlayerPrefs 存储
         consecutiveDays = PlayerPrefs.GetInt("ConsecutiveDays", 0);
         string lastDateStr = PlayerPrefs.GetString("LastSignInDate", "");
         if (!string.IsNullOrEmpty(lastDateStr))
@@ -48,10 +48,11 @@ public class RetentionManager : MonoBehaviour
             }
             else if (lastSignInDate.Date == DateTime.Today.AddDays(-1))
             {
-                // Continue streak
+                // 继续连签
             }
             else
             {
+                // 连签中断
                 consecutiveDays = 0;
             }
         }
@@ -60,9 +61,9 @@ public class RetentionManager : MonoBehaviour
     private void InitializeTasks()
     {
         dailyTasks.Clear();
-        dailyTasks.Add(new DailyTask { description = "Complete 5 levels", targetValue = 5, rewardGold = 100 });
-        dailyTasks.Add(new DailyTask { description = "Get 10 Perfect Fits", targetValue = 10, rewardGold = 200 });
-        dailyTasks.Add(new DailyTask { description = "Reach 5 Combo", targetValue = 5, rewardGold = 150 });
+        dailyTasks.Add(new DailyTask { description = "完成 5 个关卡", targetValue = 5, rewardGold = 100 });
+        dailyTasks.Add(new DailyTask { description = "获得 10 次完美贴合", targetValue = 10, rewardGold = 200 });
+        dailyTasks.Add(new DailyTask { description = "达到 5 次连击", targetValue = 5, rewardGold = 150 });
     }
 
     public void SignIn()
@@ -77,12 +78,12 @@ public class RetentionManager : MonoBehaviour
         PlayerPrefs.SetString("LastSignInDate", lastSignInDate.ToString());
         PlayerPrefs.Save();
 
-        Debug.Log("Signed in for day " + consecutiveDays);
+        GameLogger.LogSuccess("第 " + consecutiveDays + " 天签到成功", "RETENTION");
     }
 
     public void UpdateTaskProgress(string taskType, int amount)
     {
-        // Logic to update tasks based on gameplay
+        // 根据游戏过程更新任务进度的逻辑
         foreach (var task in dailyTasks)
         {
             if (task.description.Contains(taskType))
@@ -91,7 +92,7 @@ public class RetentionManager : MonoBehaviour
                 if (task.currentValue >= task.targetValue && !task.isCompleted)
                 {
                     task.isCompleted = true;
-                    Debug.Log("Task Completed: " + task.description);
+                    GameLogger.LogSuccess("任务完成: " + task.description, "RETENTION");
                 }
             }
         }

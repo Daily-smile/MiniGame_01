@@ -6,21 +6,21 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    [Header("Panels")]
+    [Header("面板")]
     public GameObject startPanel;
     public GameObject gamePanel;
     public GameObject resultPanel;
 
-    [Header("Game UI")]
+    [Header("游戏 UI")]
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI comboText;
     public TextMeshProUGUI levelText;
     public TextMeshProUGUI progressText;
 
-    [Header("Result UI")]
+    [Header("结算 UI")]
     public TextMeshProUGUI resultTitleText;
     public TextMeshProUGUI finalScoreText;
-    public Button actionButton; // Restart or Next Level
+    public Button actionButton; // 重新开始或下一关
 
     private void Awake()
     {
@@ -56,24 +56,24 @@ public class UIManager : MonoBehaviour
         gamePanel.SetActive(false);
         resultPanel.SetActive(true);
 
-        resultTitleText.text = isWin ? "Level Complete!" : "Game Over!";
-        finalScoreText.text = "Score: " + score;
+        resultTitleText.text = isWin ? "关卡完成！" : "游戏结束！";
+        finalScoreText.text = "得分: " + score;
         
         TextMeshProUGUI btnText = actionButton.GetComponentInChildren<TextMeshProUGUI>();
-        btnText.text = isWin ? "Next Level" : "Try Again";
+        btnText.text = isWin ? "下一关" : "再试一次";
     }
 
     public void UpdateGameUI()
     {
         if (GameManager.Instance == null) return;
         
-        scoreText.text = "Score: " + GameManager.Instance.score;
-        comboText.text = GameManager.Instance.combo > 0 ? "Combo: " + GameManager.Instance.combo : "";
-        levelText.text = "Level: " + GameManager.Instance.currentLevel;
-        progressText.text = "Progress: " + GameManager.Instance.successfulFits + "/" + GameManager.Instance.targetFits;
+        scoreText.text = "得分: " + GameManager.Instance.score;
+        comboText.text = GameManager.Instance.combo > 0 ? "连击: " + GameManager.Instance.combo : "";
+        levelText.text = "关卡: " + GameManager.Instance.currentLevel;
+        progressText.text = "进度: " + GameManager.Instance.successfulFits + "/" + GameManager.Instance.targetFits;
     }
 
-    // Button actions
+    // 按钮动作
     public void OnStartButtonClick()
     {
         GameManager.Instance.StartLevel(1);

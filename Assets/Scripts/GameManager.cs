@@ -114,7 +114,7 @@ public class GameManager : MonoBehaviour
         // 贴片从底部发射（角度为 270 度）
         float targetWorldAngle = 270f;
         
-        bool matchedAnyGap = false;
+        //bool matchedAnyGap = false;
         float minAngleDiff = 360f;
 
         for (int i = 0; i < ring.gaps.Count; i++)
@@ -129,7 +129,7 @@ public class GameManager : MonoBehaviour
 
             if (ring.gaps[i].isTarget && diff < goodFitThreshold)
             {
-                matchedAnyGap = true;
+                //matchedAnyGap = true;
             }
         }
 
